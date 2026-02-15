@@ -397,6 +397,46 @@ else:
         st.header("👤 Account")
         st.success(f"**{st.session_state.user_email}**")
         
+        # Gemini API Key Management
+        st.markdown("---")
+        st.markdown("### 🔑 Gemini API Key")
+        
+        with st.expander("Change API Key"):
+            new_api_key = st.text_input(
+                "New Gemini API Key",
+                type="password",
+                placeholder="AIzaSy...",
+                key="new_gemini_key"
+            )
+            
+            if st.button("💾 Update API Key", use_container_width=True):
+                if not new_api_key:
+                    st.error("❌ Please enter a new API key")
+                else:
+                    # Update in database
+                    creds = st.session_state.credentials
+                    creds_dict = {
+                        'token': creds.token,
+                        'refresh_token': creds.refresh_token,
+                        'token_uri': creds.token_uri,
+                        'client_id': creds.client_id,
+                        'client_secret': creds.client_secret,
+                        'scopes': creds.scopes
+                    }
+                    
+                    result = db.save_user(
+                        st.session_state.user_email,
+                        new_api_key,
+                        creds_dict
+                    )
+                    
+                    if result['status'] == 'success':
+                        st.session_state.gemini_key = new_api_key
+                        st.success("✅ API key updated!")
+                        st.rerun()
+                    else:
+                        st.error(f"❌ {result['message']}")
+        
         # Gmail Drafts
         st.markdown("---")
         st.markdown("### 📬 Gmail Drafts")
