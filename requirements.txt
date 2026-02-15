@@ -1,6 +1,10 @@
-streamlit==1.31.0
-google-generativeai
+streamlit
+google-genai
 google-auth
 google-auth-oauthlib
 google-auth-httplib2
 google-api-python-client
+cryptography
+python-dotenv
+openpyxl
+pandas

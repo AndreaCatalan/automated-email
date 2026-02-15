@@ -7,7 +7,7 @@ from utils.analyzer import analyze_with_gemini
 from utils.email_sender import send_email
 from utils.database import UserDatabase
 from utils.gmail_drafts import get_gmail_drafts, get_draft_content
-import google.generativeai as genai
+import google.genai as genai
 
 # Helper function for week calculation
 def get_week_of_month(date):
