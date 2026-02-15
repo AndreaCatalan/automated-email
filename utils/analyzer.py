@@ -31,9 +31,9 @@ def analyze_with_gemini(sheet_data, gemini_api_key):
         print(f"[RATE LIMIT] First call - no wait needed")
     
     try:
-        # Configure Gemini
+        # Configure Gemini with new API
         print(f"[GEMINI] Configuring API...")
-        genai.configure(api_key=gemini_api_key)
+        client = genai.Client(api_key=gemini_api_key)
         
         # Format the data for Gemini
         headers = sheet_data[0] if sheet_data else []
@@ -126,29 +126,17 @@ REMEMBER: Make each email UNIQUE by using:
 DATA:
 {data_text}"""
         
-        # Use faster model with optimized settings
-        print(f"[GEMINI] Creating model...")
-        model = genai.GenerativeModel(
-            'gemini-pro',  # Using gemini-pro which is stable and widely available
-            generation_config={
-                'temperature': 0.7,
-                'top_p': 0.95,
-                'top_k': 40,
-                'max_output_tokens': 2048,
-            }
-        )
-        
         # Record the API call time BEFORE making the call
         _last_gemini_call = time.time()
         print(f"[GEMINI] Making API call at: {datetime.now().strftime('%H:%M:%S')}")
         
-        # Generate with timeout and retry
+        # Generate with timeout and retry using new API
         max_retries = 2
         for attempt in range(max_retries):
             try:
-                response = model.generate_content(
-                    prompt,
-                    request_options={'timeout': 30}
+                response = client.models.generate_content(
+                    model='gemini-2.0-flash-exp',  # Using latest model
+                    contents=prompt
                 )
                 
                 print(f"[GEMINI] ✓ Success! Response received")
